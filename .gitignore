@@ -1,0 +1,49 @@
+# ===============================
+# Operation Iron Watch 02
+# Blue Team / SOC Lab Git Ignore
+# ===============================
+
+# --- Logs & Evidence (never commit) ---
+logs/
+evidence/raw/
+evidence/screenshots/
+evidence/pcaps/
+*.log
+*.pcap
+*.pcapng
+
+# --- Temporary / Generated files ---
+tmp/
+temp/
+*.tmp
+*.swp
+*.bak
+
+# --- OS / Editor noise ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.code-workspace
+
+# --- Python / Scripts (if added later) ---
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# --- SIEM / Tool artifacts ---
+wazuh-data/
+elastic-data/
+snort.log.*
+alert.fast
+
+# --- Compressed files ---
+*.zip
+*.tar
+*.gz
+*.7z
+
+# --- Private notes ---
+private-notes.md
+credentials.md
