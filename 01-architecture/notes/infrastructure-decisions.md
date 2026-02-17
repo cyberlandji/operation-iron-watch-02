@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-#
 # ============================================================
 # Infrastructure Decisions
 # Operation Iron Watch 02
