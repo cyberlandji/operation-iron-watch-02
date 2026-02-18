@@ -1,0 +1,42 @@
+NETWORK VISIBILITY:
+
+- Inbound connections to web-arm01
+- Scanning behavior (multiple ports, rapid probes)
+- Unusual traffic patterns from redforge-01
+- Internal LAN activity (east-west traffic)
+
+ALERTING APPROACH:
+
+- Low-to-medium severity alerts preferred
+- Alerts trigger investigation, not response
+- False positives are acceptable for learning
+- Alerts must be explainable and documented
+
+ANALYST WORKFLOW:
+
+1. Alert is generated on soc-core02
+2. Analyst reviews correlated logs
+3. Timeline of attacker activity is built
+4. Evidence is collected and stored
+5. Findings are documented
+
+EVIDENCE STRATEGY:
+
+- Raw logs preserved
+- Screenshots captured where relevant
+- Alert IDs referenced in documentation
+- Evidence stored in 07-evidence/
+
+LIMITATIONS:
+
+- No automated blocking or response
+- No SOAR integration
+- No advanced UEBA
+- No encrypted traffic inspection
+
+EXPECTED OUTPUTS:
+
+- Reconnaissance detection alerts
+- HTTP enumeration visibility
+- Clear attacker activity timeline
+- Analyst investigation notes
