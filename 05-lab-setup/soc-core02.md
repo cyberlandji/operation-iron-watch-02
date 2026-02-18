@@ -1,3 +1,4 @@
+ROLE:
 Central monitoring and detection VM
 
 STEPS:
