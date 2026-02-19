@@ -12,3 +12,9 @@
 - Agent data port (1514) configured and available on demand
 - Control plane validated prior to endpoint onboarding
 
+## PHASE 2 – AGENT CONFIGURATION | LOCKED]
+
+✔ web-arm01 configured as Wazuh agent
+✔ Manager address correctly set to soc-core02
+✔ Secure protocol defined
+✔ No reverse or self-pointing configuration
