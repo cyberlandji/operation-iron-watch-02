@@ -17,7 +17,6 @@ NOT:
 - Detection tuning
 - Evidence analysis
 
-#!/usr/bin/env bash
 # ============================================================
 # Operation Iron Watch 02
 # Phase 3 — Sanity Check & Baseline Observation (DOCUMENTED)
@@ -105,7 +104,37 @@ sudo grep -E "web-arm01|sshd|sudo|apache|systemd" /var/ossec/logs/archives/archi
 # That is GOOD. Baseline is about understanding normal activity.
 # archives.log is your proof of ingestion and visibility.
 
-EOF
 
-echo
-echo "[LOCK] Phase 3 baseline procedure written. Execute, screenshot, and archive evidence."
+
+# ============================================================
+# Iron Watch 02 – Baseline Validation (Revision)
+# ============================================================
+
+# Context:
+#   An initial baseline validation was performed
+#   BEFORE the Wazuh browser dashboard was integrated.
+
+# Limitation:
+#   - No visual confirmation of alerts
+#   - No dashboard-level evidence
+#   - Limited SOC-style validation
+
+# Decision:
+#   Perform a second baseline AFTER dashboard integration.
+
+# Baseline Versions:
+#   Baseline v0:
+#     - Agent installation
+#     - Log generation at system level
+#     - No dashboard visibility
+
+#   Baseline v1 (authoritative baseline):
+#     - Dashboard accessible via browser
+#     - Agents visible and healthy
+#     - Benign activity observable in UI
+#     - Screenshots captured for evidence
+
+# Rule:
+#   Baseline v1 replaces v0 as the official SOC baseline
+#   for all future attack analysis.
+
