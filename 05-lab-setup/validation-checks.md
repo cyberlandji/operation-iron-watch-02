@@ -18,6 +18,58 @@ NOT:
 - Evidence analysis
 
 # ============================================================
+# Iron Watch 02 – Phase 2.5: Wazuh Browser Dashboard Setup
+# ============================================================
+
+# Objective:
+#   Deploy and validate the Wazuh browser-based dashboard
+#   before any adversary activity.
+
+# Scope:
+#   - soc-core02 (Wazuh Manager + Indexer + Dashboard)
+#   - Accessed from Safeguard Host via browser
+
+
+# ============================================================
+# Iron Watch 02 – Wazuh Stack Reconciliation
+# ============================================================
+
+# Situation:
+#   Wazuh Manager was installed without Indexer and Dashboard.
+
+# Action:
+#   Reinstalled Wazuh using official all-in-one installer
+#   with overwrite enabled to ensure stack consistency.
+
+# Result:
+#   - wazuh-manager
+#   - wazuh-indexer
+#   - wazuh-dashboard
+#   running on soc-core02
+
+# Rationale:
+#   Clean SIEM baseline required before adversary simulation.
+
+# ============================================================
+# Wazuh Stack Status – VERIFIED
+# ============================================================
+
+# wazuh-manager     → active (running)
+# wazuh-indexer     → active (running)
+# wazuh-dashboard   → active (running)
+
+# Installation:
+#   - Official all-in-one installer
+#   - Overwrite mode used intentionally
+#   - No errors reported
+
+# Result:
+#   SOC stack is operational and stable
+
+
+  
+
+# ============================================================
 # Operation Iron Watch 02
 # Phase 3 — Sanity Check & Baseline Observation (DOCUMENTED)
 # ============================================================
