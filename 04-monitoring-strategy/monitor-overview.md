@@ -29,7 +29,7 @@ web-arm01 (Target)
         |
         |  Logs / Events / Telemetry
         v
-soc-core02 (SIEM & Detection)
+soc-core03 (SIEM & Detection)
         |
         v
 Safeguard Host (Analyst)
