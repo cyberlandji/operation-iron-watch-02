@@ -1,0 +1,253 @@
+# STEP 5 — Baseline Observation (Normal vs Noise)
+
+## Purpose
+
+This step establishes the **normal operational baseline** for Iron Watch 02.
+Before introducing any threat activity, the SOC must understand:
+
+- What “normal” looks like
+- What background noise exists
+- How logs behave over time without attacks
+
+This baseline becomes the **reference point** for all future detections.
+
+---
+
+## Scope
+
+- Operation: Iron Watch 02
+- Phase: Baseline observation
+- SOC Node: soc-core03
+- Log Sources:
+    - soc-core03 (system & auth)
+    - web-arm01 (Apache, auth, system)
+- Detection logic: NONE
+- Alerts: DISABLED
+- Attacks: NONE
+
+---
+
+## Baseline Rules (Strict)
+
+- No attacker activity
+- No scanning
+- No brute-force
+- No fuzzing
+- Only benign, intentional actions
+
+If malicious activity occurs, **invalidate baseline and restart**.
+
+---
+
+## Observation Window
+
+Recommended minimum:
+
+- 30–60 minutes of normal operation
+
+Optional:
+
+- Repeat observations across different times (idle vs active)
+
+---
+
+## 1. SOC Node (soc-core03) — Baseline Behavior
+
+### What to Observe
+
+- SSH access patterns
+- System messages
+- Service behavior
+- Log volume growth
+
+---
+
+### Commands
+
+```bash
+sudo tail -n 50 /var/log/syslog
+sudo tail -n 50 /var/log/auth.log
+```
+
+Optional volume tracking:
+
+```
+sudowc-l /var/log/syslog
+sleep60
+sudowc-l /var/log/syslog
+```
+
+---
+
+### Expected Normal Patterns
+
+- Periodic system messages
+- Occasional cron entries
+- Minimal SSH activity
+- No repeated authentication failures
+
+📸 Evidence:
+
+- Sample syslog entries
+- Auth log snapshot
+
+---
+
+## 2. web-arm01 — Baseline Web Activity
+
+### Generate Benign Traffic (Controlled)
+
+On **web-arm01**, perform light, intentional actions:
+
+```
+curl http://localhost
+curl http://localhost/index.html
+curl http://localhost/nonexistent-page
+```
+
+Optional browser access from host machine.
+
+---
+
+### Observe Logs on soc-core03
+
+```
+sudogrep"web-arm01" /var/log/syslog | tail-n50
+```
+
+---
+
+### Expected Normal Patterns
+
+- HTTP 200 and 404 responses
+- Single requests per action
+- No request bursts
+- Predictable User-Agent strings (curl, browser)
+
+📸 Evidence:
+
+- Apache access entries (via syslog)
+- Error log entries for 404s
+
+---
+
+## 3. Authentication Noise Analysis
+
+### What to Check
+
+- SSH login attempts
+- Failed vs successful auth
+- Unexpected sources
+
+---
+
+### Commands
+
+```
+sudogrep"Failed password" /var/log/syslog
+sudogrep"Accepted password" /var/log/syslog
+```
+
+---
+
+### Expected Normal Patterns
+
+- Few or zero failed attempts
+- Known source IPs only
+- No repeated failures
+
+📸 Evidence:
+
+- Auth-related log excerpts
+
+---
+
+## 4. Background Noise Identification
+
+### Why this matters
+
+Not all logs are attacks.
+
+Some noise is environmental and must be understood.
+
+---
+
+### Commands
+
+```
+sudogrep-Ei"error|fail|warning" /var/log/syslog | head
+```
+
+Optional frequency check:
+
+```
+sudogrep-Ei"error|fail|warning" /var/log/syslog |wc-l
+```
+
+---
+
+### Expected Normal Patterns
+
+- Occasional warnings
+- Non-repeating messages
+- No escalation patterns
+
+📸 Evidence:
+
+- Sample warning/error entries
+
+---
+
+## 5. Baseline Summary Table
+
+Document observed behavior:
+
+| Category | Normal Observation |
+| --- | --- |
+| Syslog volume | Stable, gradual growth |
+| SSH activity | Minimal, expected |
+| Web traffic | Low, intentional |
+| Errors | Occasional, non-repeating |
+| Noise level | Low and understandable |
+
+Fill this table based on your environment.
+
+---
+
+## 6. Baseline Lock Decision
+
+Baseline is considered **VALID** if:
+
+- Log flow is stable
+- No unexplained spikes
+- No unexpected auth failures
+- Web traffic matches user actions
+
+If not valid:
+
+- Fix ingestion
+- Fix environment
+- Restart baseline
+
+---
+
+## Outcome of STEP 5
+
+At the end of this step:
+
+- Normal behavior is documented
+- Noise is understood
+- Reference baseline is established
+- SOC is ready for threat activity
+
+➡️ Next step:
+
+STEP 6 — Threat Scenario Injection
+
+---
+
+## Notes
+
+- Baseline documentation is as important as detections
+- Poor baselines lead to false positives
+- This step differentiates real SOC work from toy labs
