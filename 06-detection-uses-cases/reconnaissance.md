@@ -1,3 +1,4 @@
+#!/bin/bash
 ###############################################################################
 # FILE: 06-detection-use-cases/reconnaissance.md
 # PROJECT: Operation Iron Watch 02
