@@ -1,48 +1,138 @@
-SCENARIO NARRATIVE:
+#!/bin/bash
+###############################################################################
+# FILE: 03-threat-scenario/attack-scenario.md
+# PROJECT: Operation Iron Watch 02
+# PURPOSE: Attacker scenario definition (locked for IW02)
+###############################################################################
 
-An internal attacker (redforge-01) is present on the same LAN as web-arm01.
-The attacker begins with network and service reconnaissance to identify
-reachable hosts and exposed services.
+cat << 'EOF' > attack-scenario.md
+# Attacker Scenario — Iron Watch 02
 
-Upon identifying the Apache web server on web-arm01, the attacker performs
-HTTP enumeration and basic vulnerability probing.
+## Overview
+This document describes the attacker behavior scenario used to frame
+detection activities in **Iron Watch 02**.
 
-If misconfigurations or weak controls are identified, the attacker attempts
-initial access to the target system.
+The scenario is intentionally **partially observable**.  
+Only selected attacker actions are detectable in IW02, while others remain
+undetected by design. These gaps directly motivate **Iron Watch 03**.
 
-Following access, the attacker performs limited post-compromise actions
-focused on discovery and lateral awareness rather than persistence or impact.
+---
 
-The objective of the operation is not system compromise itself, but the
-detection, logging, and analyst investigation of attacker behavior.
+## Assumptions
+- The target environment exposes a public web service (Apache) and SSH access
+- The web server is intentionally **not fully hardened**
+- SSH credentials on `web-arm01` are weak
+- The attacker has no prior authentication or insider access
 
-PHASE 1 – Reconnaissance
-- Host discovery (ARP / ICMP / TCP)
-- Port scanning
-- Service identification (HTTP)
+---
 
-PHASE 2 – Initial Access Attempt
-- Web enumeration
-- Misconfiguration probing
-- Credential or access weakness testing
+## Phase 1 — Network Discovery (Not Detected)
+The attacker begins with basic network reconnaissance to identify live hosts
+and exposed services.
 
-PHASE 3 – Post-Access Discovery (If Access Achieved)
-- Local system enumeration
-- Network awareness checks
-- No persistence or destructive actions
+Typical activity includes:
+- ICMP ping scanning
+- TCP port scanning (e.g. via nmap)
 
-DEFENDER GOALS:
+Through this activity, the attacker identifies that the target host
+(`web-arm01`) is reachable and exposes:
+- an HTTP service (Apache)
+- an SSH service
 
-- Detect reconnaissance activity
-- Correlate scanning and enumeration patterns
-- Identify abnormal HTTP access behavior
-- Attribute activity to a hostile internal source
-- Document findings with evidence
+> Detection status: ❌ Not detected in IW02  
+> Reason: No network-level telemetry or baselining implemented at this stage
 
-NON-GOALS:
+---
 
-- Malware deployment
-- Data exfiltration
-- Denial of Service
-- Privilege escalation beyond basic enumeration
-- Automated response or blocking
+## Phase 2 — Service Identification (Not Detected)
+Based on scan results, the attacker confirms:
+- the presence of a web server
+- an accessible SSH service
+
+The attacker prioritizes the web service as the initial access vector.
+
+> Detection status: ❌ Not detected in IW02  
+> Reason: Service discovery telemetry not in scope
+
+---
+
+## Phase 3 — Web Enumeration (Detected)
+The attacker attempts to enumerate the web application by guessing:
+- undocumented paths
+- hidden files
+- potential downloadable resources (e.g. `/ip.txt`, `/backup/`, `/admin/`)
+
+This activity results in a **high volume of HTTP 404 (Not Found) responses**
+within a short time window.
+
+> Detection status: ✅ Detected in IW02  
+> Detection method:
+> - Apache access log ingestion
+> - Parsed fields (`client_ip`, `http_status`)
+> - Aggregation-based detection on abnormal 404 volume
+
+This phase represents the **only fully detected attacker behavior in IW02**.
+
+---
+
+## Phase 4 — Failed Web Exploitation (Not Detected)
+The attacker fails to locate exploitable web resources or sensitive files.
+
+No successful web-layer compromise occurs.
+
+> Detection status: ❌ Not detected  
+> Reason: No exploitation attempt succeeded, no additional web baselines defined
+
+---
+
+## Phase 5 — Pivot to SSH Brute Force (Not Detected)
+After failing at the web layer, the attacker pivots to the SSH service.
+
+Using a dictionary-based brute force attack against weak credentials on
+`web-arm01`, the attacker successfully authenticates.
+
+> Detection status: ❌ Not detected in IW02  
+> Reasons:
+> - No SSH authentication baseline
+> - No detection rules for login failures or brute force behavior
+
+---
+
+## Phase 6 — Compromise Outcome
+The attacker gains authenticated access to `web-arm01` via SSH.
+
+This compromise highlights multiple defensive gaps:
+- missing SSH monitoring
+- weak credentials
+- incomplete service baselining
+
+---
+
+## Scope Clarification (Important)
+Iron Watch 02 intentionally focuses on **early detection with limited baselines**.
+
+Detected:
+- Web reconnaissance via HTTP 404 enumeration
+
+Not detected:
+- Network scanning
+- SSH brute force
+- Post-compromise activity
+
+These gaps are **intentional** and form the foundation for Iron Watch 03.
+
+---
+
+## Transition to Iron Watch 03
+Iron Watch 03 is designed to address the consequences observed in this scenario:
+- Establish missing baselines (HTTP 200, HTTP 403, SSH authentication)
+- Detect brute force behavior
+- Introduce response and hardening measures
+
+---
+
+## Status
+**Locked — Iron Watch 02 attacker scenario finalized**
+EOF
+
+echo "✔ attack-scenario.md created and Iron Watch 02 scenario locked."
