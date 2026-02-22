@@ -103,3 +103,18 @@ Gaps in log ingestion directly impacted SOC visibility
 Incident reconstruction remains possible through correlation of available data
 
 These findings directly inform the conclusions and improvements documented in 08-lessons-learned.
+
+
+## Evidence Scope & Visibility Limitations
+
+Authentication logs (`auth.log`) confirm successful SSH access from redforge-01 to web-arm01.
+
+However, post-login command execution (e.g. `whoami`, `uname -a`, basic enumeration commands) could not be reconstructed due to the absence of command-level telemetry. By default, interactive shell commands are not logged by the operating system without additional auditing mechanisms.
+
+No evidence of the following activities was observed in available logs:
+- Privilege escalation (no `sudo` usage, no UID changes)
+- Persistence mechanisms (no new users, SSH keys, or cron jobs)
+- Data exfiltration or suspicious outbound transfers
+
+It is important to note that the absence of evidence does not conclusively prove the absence of activity. This visibility gap directly informed the hardening actions introduced in Iron Watch 03.
+
