@@ -32,12 +32,13 @@
 # Role:
 # - Defensive workstation
 # - Hosts monitoring VM
+# - Browser SIEM Dashboard (Graylog)
 #
 # Network Interface:
 # - Physical NIC (LAN / Bridged)
 #
 # ============================================================
-# soc-core02 (VM)
+# soc-core03 (VM)
 # ============================================================
 #
 # OS:
@@ -52,8 +53,8 @@
 # - Alert review
 #
 # Network Interfaces:
-# - eth0: Bridged (LAN)
-# - eth1: NAT (updates only) [optional]
+# - eth1: Bridged (LAN)
+# - eth0: NAT (updates only) [optional]
 #
 # ============================================================
 # web-arm01 (Raspberry Pi 3B+)
@@ -116,10 +117,10 @@
 # - redforge-01  -->  web-arm01
 #
 # Telemetry / Logs:
-# - web-arm01  -->  soc-core02
+# - web-arm01  -->  soc-core03
 #
 # Analysis:
-# - soc-core02 performs detection and investigation
+# - soc-core03 performs detection and investigation
 #
 # ============================================================
 # Architecture Intent
