@@ -1,5 +1,4 @@
-# 
-
+cat << 'EOF' > 05-lab-setup/soc-core03/03-log-ingestion.md
 # STEP 3 — Log Ingestion (Minimal & Controlled)
 
 ## Purpose
@@ -68,149 +67,143 @@ These logs already exist locally and require no forwarding yet.
 
 ```bash
 ls -lh /var/log/syslog /var/log/auth.log
+Expected
 
-### Expected
+Files exist
 
-- Files exist
-- File size increases over time
-- Readable by root
+File size increases over time
 
-📸 Evidence:
-
-- Log file listing
-
----
-
-### Validation — Live Log Activity
-
-```
-sudo tail-n20 /var/log/syslog
-sudo tail-n20 /var/log/auth.log
-```
-
-### Expected
-
-- New entries appear
-- Timestamps are correct
-- No obvious parsing errors
+Readable by root
 
 📸 Evidence:
 
-- Sample log entries
+Log file listing
 
----
+Validation — Live Log Activity
+sudo tail -n 20 /var/log/syslog
+sudo tail -n 20 /var/log/auth.log
+Expected
 
-### Outcome (Local)
+New entries appear
 
-- Logs are confirmed present
-- Logs are actively written
-- SOC node telemetry is available
+Timestamps are correct
+
+No obvious parsing errors
+
+📸 Evidence:
+
+Sample log entries
+
+Outcome (Local)
+
+Logs are confirmed present
+
+Logs are actively written
+
+SOC node telemetry is available
 
 ➡️ Proceed only if all checks pass.
 
----
+2. Preparing web-arm01 for Log Forwarding
+Why this matters
 
-## 2. Preparing web-arm01 for Log Forwarding
-
-### Why this matters
-
-Remote logs must be **stable at the source** before forwarding.
-
+Remote logs must be stable at the source before forwarding.
 Forwarding broken or empty logs leads to false assumptions.
 
----
+Target Log Files on web-arm01
 
-### Target Log Files on web-arm01
+/var/log/apache2/access.log
 
-- /var/log/apache2/access.log
-- /var/log/apache2/error.log
-- /var/log/auth.log
-- /var/log/syslog
+/var/log/apache2/error.log
 
----
+/var/log/auth.log
 
-### Validation — Log Presence (on web-arm01)
+/var/log/syslog
 
-Run on **web-arm01**:
+Validation — Log Presence (on web-arm01)
 
-```
-ls-lh /var/log/apache2/access.log \
+Run on web-arm01:
+
+ls -lh /var/log/apache2/access.log \
        /var/log/apache2/error.log \
        /var/log/auth.log \
        /var/log/syslog
-```
+Expected
 
-### Expected
+All files exist
 
-- All files exist
-- Apache logs contain entries
-- Auth and system logs are active
+Apache logs contain entries
+
+Auth and system logs are active
 
 📸 Evidence:
 
-- Log file listing on web-arm01
+Log file listing on web-arm01
 
----
+Validation — Generate Benign Activity
 
-### Validation — Generate Benign Activity
+On web-arm01, generate safe activity:
 
-On **web-arm01**, generate safe activity:
-
-```
 curl http://localhost
 curl http://localhost/nonexistent-page
-```
 
 Then re-check:
 
-```
-sudo tail-n10 /var/log/apache2/access.log
-sudo tail-n10 /var/log/apache2/error.log
-```
+sudo tail -n 10 /var/log/apache2/access.log
+sudo tail -n 10 /var/log/apache2/error.log
+Expected
 
-### Expected
+New HTTP entries appear
 
-- New HTTP entries appear
-- 200 and 404 responses visible
-- Timestamps correct
+200 and 404 responses visible
+
+Timestamps correct
 
 📸 Evidence:
 
-- Apache access and error log entries
+Apache access and error log entries
 
----
+3. Transport Method (Defined, Not Configured Yet)
 
-## 3. Transport Method (Defined, Not Configured Yet)
-
-At this step, the **transport mechanism is selected but not yet activated**.
+At this step, the transport mechanism is selected but not yet activated.
 
 Chosen approach for Iron Watch 02:
 
-- File-based forwarding
-- Simple, transparent, reproducible
-- No agent sprawl
+File-based forwarding
 
-Actual configuration is deferred to **STEP 4 (Validation & Activation)**.
+Simple, transparent, reproducible
 
----
+No agent sprawl
 
-## What Is Intentionally NOT Done Yet
+Actual configuration is deferred to STEP 4 (Validation & Activation).
 
-- No log shipping service started
-- No index created
-- No parsing rules
-- No alerts
-- No dashboards
+What Is Intentionally NOT Done Yet
+
+No log shipping service started
+
+No index created
+
+No parsing rules
+
+No alerts
+
+No dashboards
 
 This is intentional and protects clarity.
 
----
-
-## Outcome of STEP 3
+Outcome of STEP 3
 
 At the end of this step:
 
-- Local SOC logs are confirmed active
+Local SOC logs are confirmed active
+
+Remote target logs are confirmed active
+
+Log paths are validated
+
+Benign activity is observable at the source
+
+Ingestion readiness is confirmed
 - Remote target logs are confirmed active
 - Log paths are validated
 - Benign activity is observable at the source
