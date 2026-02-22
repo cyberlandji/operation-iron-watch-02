@@ -60,9 +60,3 @@ followed.
 - Simpler tooling accelerates learning at early stages
 
 ---
-
-## Status
-Closed — superseded by **soc-core03**
-EOF
-
-echo "✔ GitHub postmortem created: soc-core02-postmortem.md"
