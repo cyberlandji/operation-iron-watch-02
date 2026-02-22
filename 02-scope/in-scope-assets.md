@@ -5,7 +5,7 @@ IN-SCOPE SYSTEMS:
   - Log review and investigation activities
   - SSH access to monitored assets
 
-- soc-core02 (VM)
+- soc-core03 (VM)
   - Central monitoring and SIEM component
   - Log ingestion, correlation, and alerting
   - Host-based and network-based telemetry
