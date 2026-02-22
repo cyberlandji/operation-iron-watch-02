@@ -1,11 +1,9 @@
-#!/bin/bash
 ###############################################################################
 # FILE: 03-threat-scenario/attack-scenario.md
 # PROJECT: Operation Iron Watch 02
 # PURPOSE: Attacker scenario definition (locked for IW02)
 ###############################################################################
 
-cat << 'EOF' > attack-scenario.md
 # Attacker Scenario — Iron Watch 02
 
 ## Overview
@@ -129,10 +127,4 @@ Iron Watch 03 is designed to address the consequences observed in this scenario:
 - Detect brute force behavior
 - Introduce response and hardening measures
 
----
 
-## Status
-**Locked — Iron Watch 02 attacker scenario finalized**
-EOF
-
-echo "✔ attack-scenario.md created and Iron Watch 02 scenario locked."
