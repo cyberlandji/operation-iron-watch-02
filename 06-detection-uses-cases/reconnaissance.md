@@ -1,11 +1,10 @@
-#!/bin/bash
 ###############################################################################
 # FILE: 06-detection-use-cases/reconnaissance.md
 # PROJECT: Operation Iron Watch 02
 # PURPOSE: Detection use case documentation — Reconnaissance phase
 ###############################################################################
 
-cat << 'EOF' > reconnaissance.md
+
 # Detection Use Case: Web Reconnaissance via HTTP 404 Enumeration
 
 ## Overview
