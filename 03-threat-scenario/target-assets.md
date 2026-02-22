@@ -7,6 +7,6 @@ PRIMARY TARGET:
   - Primary source of monitored telemetry
 
 SECONDARY TARGET:
-- soc-core02
+- soc-core03
   - Not directly attacked
   - Used only as a monitoring and detection platform
