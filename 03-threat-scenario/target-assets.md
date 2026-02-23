@@ -1,4 +1,3 @@
-#!/bin/bash
 PRIMARY TARGET:
 - web-arm01
   - Apache web server
