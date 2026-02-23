@@ -1,4 +1,3 @@
-#!/bin/bash
 ATTACKER PROFILE:
 
 - Codename: redforge-01
