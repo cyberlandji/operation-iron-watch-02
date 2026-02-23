@@ -1,4 +1,3 @@
-#!/bin/bash
 NEXT FILES:
 
 - mitre-mapping.md
