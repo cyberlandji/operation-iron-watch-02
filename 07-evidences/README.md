@@ -118,3 +118,6 @@ No evidence of the following activities was observed in available logs:
 
 It is important to note that the absence of evidence does not conclusively prove the absence of activity. This visibility gap directly informed the hardening actions introduced in Iron Watch 03.
 
+
+**During the investigation, a timezone offset was observed between Graylog (Europe/London) and the target host (Europe/Berlin). While this resulted in a one-hour timestamp difference, event ordering and correlation remained unaffected. This highlights the importance of consistent time synchronization for multi-source log analysis.
+
