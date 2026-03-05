@@ -1,53 +1,138 @@
-🛡️ Iron Watch 02 — Overview
+# 🔐 Operation Iron Watch 02
+## Graylog SIEM — Web Enumeration Detection & Visibility Gaps
 
-Iron Watch 02 is a Blue Team–focused detection exercise designed to validate baseline visibility, early-stage attack detection, and incident correlation within a controlled SOC lab environment.
+[![Status](https://img.shields.io/badge/status-complete-brightgreen)](https://github.com/cyberlandji/operation-iron-watch-02)
+[![Lab Series](https://img.shields.io/badge/series-Operation%20Iron%20Watch-blue)](https://github.com/cyberlandji)
+[![Focus](https://img.shields.io/badge/focus-Graylog%20SIEM%20%26%20Detection-teal)](https://github.com/cyberlandji/operation-iron-watch-02)
 
-The operation simulates a realistic external attacker performing reconnaissance, web enumeration, and SSH brute-force activity against a publicly exposed web server. Detection efforts are centered on identifying abnormal behavior through log analysis and threshold-based alerting, rather than achieving full attacker containment.
+---
 
-🎯 Scope & Intent
+## 📌 Overview
 
-The primary objectives of Iron Watch 02 are to:
+Operation Iron Watch 02 introduces **Graylog as a SIEM** and validates baseline detection capability against a simulated external attacker targeting a publicly exposed web server.
 
-Establish and validate baseline network and web activity
+IW02 successfully detected web enumeration activity via HTTP 404 spike alerting. However, it also exposed a critical blind spot: a **real SSH compromise occurred and was completely invisible on the SIEM** because `auth.log` was never ingested into Graylog.
 
-Detect reconnaissance and enumeration behavior using SIEM telemetry
+> IW02 proves that a SIEM is only as good as what it ingests. Visibility gaps are security gaps.
 
-Trigger and validate alerts prior to successful compromise
+---
 
-Identify visibility gaps caused by incomplete log ingestion
+## 🎯 Objectives
 
-Practice structured incident reconstruction and correlation
+- Establish and validate baseline network and web activity
+- Detect web reconnaissance and enumeration via SIEM alerting
+- Validate threshold-based detection logic before successful compromise
+- Identify visibility gaps caused by incomplete log ingestion
+- Practice structured incident reconstruction and correlation
 
-This operation emphasizes detection accuracy and analytical reasoning over attack complexity.
+---
 
-🔇 About Benign Background Activity
+## 🏗️ Lab Infrastructure
 
-Iron Watch 02 was executed with limited benign background activity by design.
+| Host | IP | Role |
+|------|----|------|
+| `soc-core04` (VM) | 192.168.0.5 | Graylog SIEM |
+| `web-arm01` (Raspberry Pi) | 192.168.0.9 | Apache2 web server — target |
+| Safeguard Host | 192.168.0.7 | Physical host / admin access |
 
-The environment was intentionally kept controlled to:
+> Both `soc-core04` and `web-arm01` were on the same flat LAN (192.168.0.0/24) — no segmentation. This is a key architectural gap addressed in IW03.
 
-Clearly distinguish baseline behavior from malicious activity
+---
 
-Reduce noise during initial detection logic validation
+## 🛠️ Detection Stack
 
-Prevent false positives while establishing alert thresholds
+| Tool | Host | Role |
+|------|------|------|
+| Graylog | soc-core04 | SIEM — log ingestion and alerting |
+| Apache2 | web-arm01 | Web server — `access.log` source |
+| rsyslog | web-arm01 | Log forwarding to Graylog |
 
-Enable precise correlation between attacker actions and observed telemetry
+---
 
-Limited benign noise in this phase is not a limitation, but a deliberate architectural choice aligned with early-stage SOC detection development.
+## 🔍 Detection — What Worked
 
-Increased background activity and mixed benign/malicious traffic are intentionally deferred to future operations (e.g., Iron Watch 03), where correlation complexity and detection tuning will be further challenged.
+### HTTP 404 Spike Rule (Web Enumeration)
 
-📌 Key Takeaway
+Graylog alert triggered on abnormal HTTP 404 response rate from a single source IP within a time window — consistent with automated web enumeration tools scanning for valid paths and resources.
 
-Iron Watch 02 demonstrates that:
+| Signal | Threshold | Result |
+|--------|-----------|--------|
+| HTTP 404 responses per source IP | Spike above baseline | ✅ Alert fired correctly |
 
-Early indicators of compromise can be detected before attacker success
+> Detection confirmed: early-stage web reconnaissance is detectable via access log analysis before any successful exploitation occurs.
 
-Effective detection relies on telemetry coverage, not only alert logic
+---
 
-Missing or incomplete log ingestion directly impacts SOC visibility
+## ⚠️ The Blind Spot — What Failed
 
-Controlled environments are essential for building reliable detection foundations
+### SSH Compromise Was Invisible
 
-This operation serves as a foundational detection baseline, upon which future improvements and more complex scenarios will be built.
+During IW02, a **real SSH brute-force succeeded** and the attacker gained shell access to `web-arm01`. Graylog generated **zero alerts** for this event.
+
+**Root cause:** `auth.log` was never ingested into Graylog. The log pipeline only covered `access.log`.
+
+| Event | Logged on Host | In Graylog | Alert Fired |
+|-------|---------------|------------|-------------|
+| Web enumeration (HTTP 404s) | ✅ | ✅ | ✅ |
+| SSH brute-force attempts | ✅ | ❌ | ❌ |
+| SSH successful login | ✅ | ❌ | ❌ |
+| Post-compromise activity | ✅ | ❌ | ❌ |
+
+> The attacker moved freely on `web-arm01` while Graylog watched HTTP traffic. This is a textbook example of incomplete telemetry creating a false sense of security.
+
+---
+
+## 🗺️ MITRE ATT&CK Mapping
+
+| Technique | Tactic | Status |
+|-----------|--------|--------|
+| Active Scanning — Web Enumeration | Reconnaissance | ✅ Detected |
+| Brute Force — Password Spraying | Credential Access | ⚠️ Occurred — Not Detected |
+| Valid Accounts — SSH | Initial Access | ⚠️ Succeeded — Not Detected |
+
+---
+
+## 📂 Structure
+
+```
+operation-iron-watch-02/
+├── 00-overview/              # Operation summary and intent
+├── 01-architecture/          # Network topology and host details
+├── 02-scope/                 # Lab scope and boundaries
+├── 03-threat-scenario/       # Attacker scenario and TTPs
+├── 04-monitoring-strategy/   # Detection logic and alert rules
+├── 05-lab-setup/             # Host configurations
+├── 06-detection-use-cases/   # Alert rules and detection documentation
+├── 07-evidences/             # Screenshots and log samples
+├── 08-lessons-learned/       # Gap analysis and key takeaways
+├── 09-postmortems/           # SSH compromise post-mortem
+└── README.md
+```
+
+---
+
+## 🏁 Key Takeaways
+
+- **Early detection is possible** — web enumeration was caught before any successful compromise
+- **Incomplete log ingestion is a critical gap** — if it is not ingested, it does not exist from the SIEM's perspective
+- **Flat network architecture is dangerous** — once inside `web-arm01`, an attacker could move freely toward LAN hosts
+- **A SIEM without full telemetry coverage gives a false sense of security**
+
+---
+
+## 🔗 Iron Watch Series
+
+| Episode | Focus | Status |
+|---------|-------|--------|
+| [Iron Watch 01](https://github.com/cyberlandji/operation-iron-watch-01) | Foundational SOC — Snort IDS, manual correlation | ✅ Complete |
+| **Iron Watch 02** | **Graylog SIEM — web enumeration detection, SSH compromise invisible** | ✅ Complete |
+| [Iron Watch 03](https://github.com/cyberlandji/operation-iron-watch-03) | DMZ hardening, log pipeline, DDoS detection suite | 🔄 In Progress |
+| Iron Watch 04 | Attack validation — Kali recon & initial access against IW03 | 🔜 Planned |
+
+---
+
+## 👤 Author
+
+**cyberlandji** — Blue Team Practitioner | ISC2 CC | CompTIA Security+ (in progress)
+
+Portfolio: [cyberlandji.com](https://cyberlandji.com) · GitHub: [github.com/cyberlandji](https://github.com/cyberlandji)
