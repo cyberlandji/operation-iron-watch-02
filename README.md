@@ -126,8 +126,7 @@ operation-iron-watch-02/
 |---------|-------|--------|
 | [Iron Watch 01](https://github.com/cyberlandji/operation-iron-watch-01) | Foundational SOC — Snort IDS, manual correlation | ✅ Complete |
 | **Iron Watch 02** | **Graylog SIEM — web enumeration detection, SSH compromise invisible** | ✅ Complete |
-| [Iron Watch 03](https://github.com/cyberlandji/operation-iron-watch-03) | DMZ hardening, log pipeline, DDoS detection suite | 🔄 In Progress |
-| Iron Watch 04 | Attack validation — Kali recon & initial access against IW03 | 🔜 Planned |
+| [Iron Watch 03](https://github.com/cyberlandji/operation-iron-watch-03) | DMZ hardening, log pipeline, DDoS detection suite | ✅ Complete |
 
 ---
 
